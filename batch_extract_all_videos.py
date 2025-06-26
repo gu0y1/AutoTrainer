@@ -42,7 +42,7 @@ with open(csv_path, mode=write_mode, newline='', encoding='utf-8-sig') as f:
             continue
 
         video_path = os.path.join(video_dir, filename)
-        action_label = os.path.splitext(filename)[0]  # 中文文件名作为标签（如 房子.mp4 → 房子）
+        action_label = os.path.splitext(filename)[0]  # 中文文件名作为标签（如 房子.mp4 → 房zi)
         print(f"\n🚀 开始处理视频：{filename}，标签：{action_label}")
 
         cap = cv2.VideoCapture(video_path)
