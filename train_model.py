@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import classification_report, confusion_matrix
 import joblib
@@ -10,7 +10,7 @@ import os
 # === 配置 ===
 csv_path = "video_labels.csv"                  # 数据路径（含双手数据和 is_two_hands）
 model_dir = "models"                           # 模型保存目录
-model_output_path = os.path.join(model_dir, "svm_model.joblib")
+model_output_path = os.path.join(model_dir, "mlp_model.joblib")
 
 # === 1. 加载数据 ===
 try:
@@ -55,18 +55,26 @@ X_scaled = scaler.fit_transform(X)
 X_train, X_test, y_train, y_test = train_test_split(X_scaled, y_encoded, test_size=0.2, random_state=42)
 
 # === 7. 训练模型 ===
-clf = SVC(kernel='rbf', probability=True)
-clf.fit(X_train, y_train)
+mlp = MLPClassifier(
+    hidden_layer_sizes=(128,64),
+    activation='relu',
+    solver='adam',
+    max_iter=300,
+    random_state=42,
+    early_stopping=True,
+    verbose=True, 
+)
+mlp.fit(X_train, y_train)
 
 # === 8. 模型评估 ===
-y_pred = clf.predict(X_test)
+y_pred = mlp.predict(X_test)
 print("📊 分类报告:")
 print(classification_report(y_test, y_pred, target_names=label_encoder.classes_))
 print("🧩 混淆矩阵:")
 print(confusion_matrix(y_test, y_pred))
 
 # === 9. 保存模型组件 ===
-joblib.dump(clf, os.path.join(model_dir, "svm_model.joblib"))
+joblib.dump(mlp, model_output_path)
 joblib.dump(scaler, os.path.join(model_dir, "scaler.joblib"))
 joblib.dump(label_encoder, os.path.join(model_dir, "label_encoder.joblib"))
 
