@@ -39,7 +39,7 @@ with open(csv_path, mode=write_mode, newline='', encoding='utf-8-sig') as f:
     # 遍历所有子文件夹和视频
     for root, dirs, files in os.walk(video_dir):
         for filename in files:
-            if not filename.endswith(".mp4"):
+            if not filename.endswith(".mp4") or filename.endswith(".mov"):
                 continue
 
             video_path = os.path.join(root, filename)
